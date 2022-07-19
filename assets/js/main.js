@@ -1,63 +1,76 @@
 const contentContainer = document.querySelector('#content-container');
 const cartCounterLabel = document.querySelector('#cart-counter-label');
+console.log(cartCounterLabel)
 
 let cartCounter = 0;
 let cartPrice = 0;
 
 const incrementCounter = (label, cn) => {
   const counter = cn + 1;
+  cartCounter++
+    cartCounterLabel.innerHTML = `${counter}`;
 
-  label.innerHTML = `${counter}`;
-  if (counter === 1) cartCounterLabel.style.display = 'block';
+    if(cartCounter ===1) {
+      cartCounterLabel.style.display = 'block';
+    }
+  
+  return counter
 
-  return counter;
-};
+}
 
-const getMockData = (t) => +t.parentElement
-  .previousElementSibling
-  .innerHTML
-  .replace(/^\$(\d+)\s\D+(\d+).*$/u, '$1.$2');
 
-const getPrice = (t, price) => Math.round((price + getMockData(t)) * 100) / 100;
+const getMockData = (t) => {
+  return +t.parentElement.previousElementSibling.innerHTML
+  .replace(/^\$(\d+)\s\D+(\d+).*$/, '$1.$2');
 
-const disableControls = (t, fn) => {
-  contentContainer.removeEventListener('click', fn);
+}
+
+const getPrice = (t, price) => {
+  return Math.round((price + getMockData(t))*100) / 100;
+
+}
+
+const enableControls = (t, el, fn) => {
   t.disabled = true;
-};
+  el.removeEventListener('click', fn)
+}
 
-const enableControls = (t, fn) => {
-  contentContainer.addEventListener('click', fn);
+const disableControls = (t, el, fn) => {
   t.disabled = false;
-};
+  el.addEventListener('click', fn)
+}
 
 const btnClickHandler = (e) => {
-  const target = e.target;
+  const t = e.target;
   const interval = 2000;
-
-  let restoreHTML = null;
-
-  if (typeof target !== 'object') {
-    console.error('target не является объектом.');
-
+  let restore = null;
+  if(typeof t !== 'object') {
+    console.error('no object')
     return;
   }
 
-  if (target.matches('.item-actions__cart')) {
-
+  if(t.matches('.item-actions__cart')) {
     cartCounter = incrementCounter(cartCounterLabel, cartCounter);
+    
+    const mock = getMockData(t);
 
-    cartPrice = getPrice(target, cartPrice);
-    restoreHTML = target.innerHTML;
-
-    target.innerHTML = `Added ${cartPrice.toFixed(2)} $`;
-
-    disableControls(target, btnClickHandler);
+    if(isNaN(mock)) {
+      console.error('no number');
+      return;
+    }
+    console.log(mock);
+    restore = t.innerHTML;
+    cartPrice = getPrice(t, cartPrice);
+    t.innerHTML = `Added ${cartPrice.toFixed(2)} $`;
+    enableControls(t, contentContainer, btnClickHandler);
 
     setTimeout(() => {
-      target.innerHTML = restoreHTML;
-      enableControls(target, btnClickHandler);
-    }, interval);
-  }
-};
+      
+      t.innerHTML = restore;
+      disableControls(t, contentContainer, btnClickHandler);
 
-contentContainer.addEventListener('click', btnClickHandler);
+    }, interval)
+  }
+}
+
+contentContainer.addEventListener('click', btnClickHandler)
