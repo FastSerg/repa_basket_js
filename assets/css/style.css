@@ -4,6 +4,7 @@
  * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
+ 
 :root {
   --blue: #007bff;
   --breakpoint-lg: 992px;
@@ -11990,4 +11991,44 @@ body {
     color: inherit;
     border-color: #dee2e6;
   }
+}
+
+
+.hidden {
+  display: none;
+}
+
+.basket {
+  position: absolute;
+  padding: 10px;
+  right: 0;
+  top: 102px;
+  width: 300px;
+  min-height: 200px;
+  background: skyblue;
+  z-index: 5;
+}
+
+.titleBasket {
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.btnContainer {
+  position: absolute;
+  display: flex;
+  gap: 5px;
+  font-size: 12px;
+  padding: 10px;
+  bottom: 0;
+  left: 0;
+}
+
+.btn-primery {
+  color: #fff3cd;
+  background: #0056b3;
+  border-radius: 7px;
+  border: 1px solid #fff3cd;
 }

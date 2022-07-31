@@ -1,7 +1,9 @@
 const contentContainer = document.querySelector('#content-container');
 const cartCounterLabel = document.querySelector('#cart-counter-label');
-console.log(cartCounterLabel)
-
+const navBar = document.querySelector('.navbar');
+const btnCart = document.querySelector('#cart');
+// console.log(btnCart)
+let sumPrise = 0;
 let cartCounter = 0;
 let cartPrice = 0;
 
@@ -10,14 +12,12 @@ const incrementCounter = (label, cn) => {
   cartCounter++
     cartCounterLabel.innerHTML = `${counter}`;
 
-    if(cartCounter ===1) {
+    if(cartCounter === 1) {
       cartCounterLabel.style.display = 'block';
     }
-  
-  return counter
+  return counter;
 
 }
-
 
 const getMockData = (t) => {
   return +t.parentElement.previousElementSibling.innerHTML
@@ -58,12 +58,10 @@ const btnClickHandler = (e) => {
       console.error('no number');
       return;
     }
-    console.log(mock);
     restore = t.innerHTML;
     cartPrice = getPrice(t, cartPrice);
     t.innerHTML = `Added ${cartPrice.toFixed(2)} $`;
     enableControls(t, contentContainer, btnClickHandler);
-
     setTimeout(() => {
       
       t.innerHTML = restore;
@@ -73,4 +71,78 @@ const btnClickHandler = (e) => {
   }
 }
 
-contentContainer.addEventListener('click', btnClickHandler)
+contentContainer.addEventListener('click', btnClickHandler);
+
+const hiddenClass = 'hidden';
+let triger = false;
+const createBasket = () => {
+  const divCart = document.createElement('div');
+
+  divCart.setAttribute('class', `${hiddenClass} basket`);
+  divCart.setAttribute('id','basket');
+
+  navBar.append(divCart);
+};
+
+createBasket();
+const btnClickCart = () => {
+  
+  const basket = document.querySelector('#basket');
+  console.log(basket);
+  basket.classList.toggle(hiddenClass);
+  // if(!triger) {
+  //   createCounterBasket();
+  //   triger = true;
+  // }
+
+};
+// totalSum.innerHTML = `Всего в корзине товаров на сумму ${sumPrise}$`;
+// divPriseBasket.innerHTML = `#2 Device Name цена ${cartPrice}$ сумма: `;
+// titleBasket.innerHTML = `В корзине ${cartCounter} товаров`;
+
+const createCounterBasket = () => {
+  sumPrise = cartPrice + sumPrise;
+  const titleBasket = document.createElement('p');
+  titleBasket.setAttribute('class', 'titleBasket');
+  titleBasket.innerHTML = `В корзине ${cartCounter} товаров`;
+  const basket = document.querySelector('#basket');
+  basket.prepend(titleBasket);
+
+  const divPriseBasket = document.createElement('div');
+  divPriseBasket.setAttribute('class', 'priseBasket');
+  divPriseBasket.innerHTML = `#2 Device Name цена ${cartPrice}$ сумма: `;
+  basket.append(divPriseBasket);
+
+  const totalSum = document.createElement('div');
+  totalSum.setAttribute('class', 'totalSum');
+  totalSum.innerHTML = `Всего в корзине товаров на сумму ${sumPrise}$`;
+  basket.append(totalSum);
+
+  const btnContainer = document.createElement('div');
+  btnContainer.setAttribute('class', 'btnContainer');
+  basket.append(btnContainer);
+
+  const btnBasketBuy = document.createElement('button');
+  btnBasketBuy.setAttribute('class', 'btnBasketBuy btn-primery');
+  btnBasketBuy.setAttribute('type', 'button');
+  btnBasketBuy.innerHTML = 'Продолжить покупки';
+  btnContainer.append(btnBasketBuy);
+
+  const btnBasketCleenCart= document.createElement('button');
+  btnBasketCleenCart.setAttribute('class', 'btnBasketCleenCart btn-primery');
+  btnBasketCleenCart.setAttribute('type', 'submit');
+  btnBasketCleenCart.innerHTML = 'Очистить корзину';
+  btnContainer.append(btnBasketCleenCart);
+
+
+  const btnBasketDesign = document.createElement('button');
+  btnBasketDesign.setAttribute('class', 'btnBasketCleenCart btn-primery');
+  btnBasketDesign.setAttribute('type', 'button');
+  btnBasketDesign.innerHTML = 'Оформить заказ';
+  btnContainer.append(btnBasketDesign);
+
+};
+
+createCounterBasket();
+
+btnCart.addEventListener('click', btnClickCart);
