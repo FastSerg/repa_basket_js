@@ -2,7 +2,7 @@ const contentContainer = document.querySelector('#content-container');
 const cartCounterLabel = document.querySelector('#cart-counter-label');
 const navBar = document.querySelector('.navbar');
 const btnCart = document.querySelector('#cart');
-// console.log(btnCart)
+
 let sumPrise = 0;
 let cartCounter = 0;
 let cartPrice = 0;
@@ -73,76 +73,211 @@ const btnClickHandler = (e) => {
 
 contentContainer.addEventListener('click', btnClickHandler);
 
+
+
+
+
+
+
+
+const createElem = ({
+  type,
+  attrs, 
+  container = null, 
+  evt = null, 
+  handler = null, 
+  position = 'append'
+}) => {
+ const el = document.createElement(type);
+  
+  Object.keys(attrs).forEach((key) => {
+
+   if(key !== 'innerHTML') el.setAttribute(key, attrs[key]);
+   else el.innerHTML = attrs[key];
+  })
+  
+  if(container && position === 'append') container.append(el);
+  if(container && position === 'prepend') container.prepend(el);
+  
+  // (typeof btnClickCart === 'function')? ;
+    
+  
+  
+  return el
+};
+
+
 const hiddenClass = 'hidden';
 let triger = false;
 const createBasket = () => {
-  const divCart = document.createElement('div');
 
-  divCart.setAttribute('class', `${hiddenClass} basket`);
-  divCart.setAttribute('id','basket');
-
-  navBar.append(divCart);
+   createElem({
+    type: 'div',
+    attrs: {
+      class: `${hiddenClass} basket`,
+      id: 'basket'
+    },
+    container: btnCart
+   })
+console.log(cartCounter + ' inside')
+   
 };
 
-createBasket();
+
 const btnClickCart = () => {
   
   const basket = document.querySelector('#basket');
   console.log(basket);
   basket.classList.toggle(hiddenClass);
-  // if(!triger) {
-  //   createCounterBasket();
-  //   triger = true;
-  // }
+
+  sumPrise = cartPrice + sumPrise;
+  
+  basket.matches('.hidden')? clearBasket():createCounterBasket();
 
 };
+
+const clearBasket = () => {
+  document.querySelector('.totalSum').remove();
+  document.querySelector('.priseBasket').remove();
+  document.querySelector('.titleBasket').remove();
+}
 // totalSum.innerHTML = `Всего в корзине товаров на сумму ${sumPrise}$`;
 // divPriseBasket.innerHTML = `#2 Device Name цена ${cartPrice}$ сумма: `;
 // titleBasket.innerHTML = `В корзине ${cartCounter} товаров`;
 
+
 const createCounterBasket = () => {
-  sumPrise = cartPrice + sumPrise;
-  const titleBasket = document.createElement('p');
-  titleBasket.setAttribute('class', 'titleBasket');
-  titleBasket.innerHTML = `В корзине ${cartCounter} товаров`;
-  const basket = document.querySelector('#basket');
-  basket.prepend(titleBasket);
 
-  const divPriseBasket = document.createElement('div');
-  divPriseBasket.setAttribute('class', 'priseBasket');
-  divPriseBasket.innerHTML = `#2 Device Name цена ${cartPrice}$ сумма: `;
-  basket.append(divPriseBasket);
+console.log(sumPrise + ' inside')
 
-  const totalSum = document.createElement('div');
-  totalSum.setAttribute('class', 'totalSum');
-  totalSum.innerHTML = `Всего в корзине товаров на сумму ${sumPrise}$`;
-  basket.append(totalSum);
+  createElem({
+    type: 'p',
+    attrs: {
+      class: 'titleBasket',
+      innerHTML: `В корзине ${cartCounter} товаров`,
+    },
+    container: basket,
+    position: 'prepend' 
+  })
 
-  const btnContainer = document.createElement('div');
-  btnContainer.setAttribute('class', 'btnContainer');
-  basket.append(btnContainer);
+  createElem({
+    type: 'div',
+    attrs: {
+      class: 'priseBasket',
+      innerHTML: `#2 Device Name цена ${cartPrice}$ сумма: `,
+    },
+    container: basket,  
+  });
 
-  const btnBasketBuy = document.createElement('button');
-  btnBasketBuy.setAttribute('class', 'btnBasketBuy btn-primery');
-  btnBasketBuy.setAttribute('type', 'button');
-  btnBasketBuy.innerHTML = 'Продолжить покупки';
-  btnContainer.append(btnBasketBuy);
-
-  const btnBasketCleenCart= document.createElement('button');
-  btnBasketCleenCart.setAttribute('class', 'btnBasketCleenCart btn-primery');
-  btnBasketCleenCart.setAttribute('type', 'submit');
-  btnBasketCleenCart.innerHTML = 'Очистить корзину';
-  btnContainer.append(btnBasketCleenCart);
+  createElem({
+    type: 'div',
+    attrs: {
+      class: 'totalSum',
+      innerHTML: `Всего в корзине товаров на сумму ${sumPrise.toFixed(2)}$`,
+    },
+    container: basket,
+  });
 
 
-  const btnBasketDesign = document.createElement('button');
-  btnBasketDesign.setAttribute('class', 'btnBasketCleenCart btn-primery');
-  btnBasketDesign.setAttribute('type', 'button');
-  btnBasketDesign.innerHTML = 'Оформить заказ';
-  btnContainer.append(btnBasketDesign);
 
 };
+const createBasketBtn = () => {
 
-createCounterBasket();
+  const btnContainer = createElem({
+    type: 'div',
+    attrs: {class: 'btnContainer'},
+    container: basket,
+  });
+
+  createElem({
+    type: 'button',
+    attrs: {
+      class: 'btnBasketBuy btn-primery',
+      type: 'button',
+      innerHTML: 'Продолжить покупки',
+    },
+    container: btnContainer,
+  });
+
+  createElem({
+    type: 'button',
+    attrs: {
+      class: 'btnBasketCleenCart btn-primery',
+      type: 'submit',
+      innerHTML: 'Очистить корзину',
+    },
+    container: btnContainer,
+  });
+
+  createElem({
+    type: 'button',
+    attrs: {
+      class: 'btnBasketCleenCart btn-primery',
+      type: 'button',
+      innerHTML: 'Оформить заказ',
+    },
+    container: btnContainer,
+  });
+};
+
+const createStyle = () => {
+  createElem({
+    type: 'style',
+    attrs: {
+    innerHTML: `
+      .hidden {
+        display: none;
+      }
+      
+      .basket {
+        position: absolute;
+        padding: 10px;
+        right: 0;
+        top: 102px;
+        width: 300px;
+        min-height: 200px;
+        background: skyblue;
+        z-index: 5;
+      }
+      
+      .titleBasket {
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+        font-size: 14px;
+      }
+      
+      .btnContainer {
+        position: absolute;
+        display: flex;
+        gap: 5px;
+        font-size: 12px;
+        padding: 10px;
+        bottom: 0;
+        left: 0;
+      }
+      
+      .btn-primery {
+        color: #fff3cd;
+        background: #0056b3;
+        border-radius: 7px;
+        border: 1px solid #fff3cd;
+      }`
+    },
+    container: document.head       
+  })
+}
+// if(cartCounter > 0)
+const init = () => {
+ 
+
+  createBasket();
+  // createCounterBasket();
+  createBasketBtn();
+  createStyle();
+}
+
+init();
+
 
 btnCart.addEventListener('click', btnClickCart);
