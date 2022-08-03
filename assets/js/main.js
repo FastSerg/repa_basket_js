@@ -1,11 +1,14 @@
+
 const contentContainer = document.querySelector('#content-container');
 const cartCounterLabel = document.querySelector('#cart-counter-label');
 const navBar = document.querySelector('.navbar');
 const btnCart = document.querySelector('#cart');
+const hiddenClass = 'hidden';
 
-let sumPrise = 0;
 let cartCounter = 0;
 let cartPrice = 0;
+let priceDevice = 0;
+let numberDevice = 0;
 
 const incrementCounter = (label, cn) => {
   const counter = cn + 1;
@@ -26,6 +29,7 @@ const getMockData = (t) => {
 }
 
 const getPrice = (t, price) => {
+  priceDevice = getMockData(t);
   return Math.round((price + getMockData(t))*100) / 100;
 
 }
@@ -40,6 +44,10 @@ const disableControls = (t, el, fn) => {
   el.addEventListener('click', fn)
 }
 
+const getNumberDevice = (t) => {
+  return t.parentElement.parentElement.firstElementChild.innerHTML.match(/^\#(\d+)+/gi);
+}
+
 const btnClickHandler = (e) => {
   const t = e.target;
   const interval = 2000;
@@ -51,7 +59,7 @@ const btnClickHandler = (e) => {
 
   if(t.matches('.item-actions__cart')) {
     cartCounter = incrementCounter(cartCounterLabel, cartCounter);
-    
+    numberDevice = getNumberDevice(t);
     const mock = getMockData(t);
 
     if(isNaN(mock)) {
@@ -73,13 +81,6 @@ const btnClickHandler = (e) => {
 
 contentContainer.addEventListener('click', btnClickHandler);
 
-
-
-
-
-
-
-
 const createElem = ({
   type,
   attrs, 
@@ -99,16 +100,9 @@ const createElem = ({
   if(container && position === 'append') container.append(el);
   if(container && position === 'prepend') container.prepend(el);
   
-  // (typeof btnClickCart === 'function')? ;
-    
-  
-  
   return el
 };
 
-
-const hiddenClass = 'hidden';
-let triger = false;
 const createBasket = () => {
 
    createElem({
@@ -119,20 +113,14 @@ const createBasket = () => {
     },
     container: btnCart
    })
-console.log(cartCounter + ' inside')
    
 };
 
-
 const btnClickCart = () => {
-  
   const basket = document.querySelector('#basket');
-  console.log(basket);
   basket.classList.toggle(hiddenClass);
-
-  sumPrise = cartPrice + sumPrise;
-  
-  basket.matches('.hidden')? clearBasket():createCounterBasket();
+  sumPrise = cartPrice;
+  basket.matches('.hidden')? clearBasket() : createCounterBasket();
 
 };
 
@@ -141,14 +129,8 @@ const clearBasket = () => {
   document.querySelector('.priseBasket').remove();
   document.querySelector('.titleBasket').remove();
 }
-// totalSum.innerHTML = `Всего в корзине товаров на сумму ${sumPrise}$`;
-// divPriseBasket.innerHTML = `#2 Device Name цена ${cartPrice}$ сумма: `;
-// titleBasket.innerHTML = `В корзине ${cartCounter} товаров`;
-
 
 const createCounterBasket = () => {
-
-console.log(sumPrise + ' inside')
 
   createElem({
     type: 'p',
@@ -164,7 +146,7 @@ console.log(sumPrise + ' inside')
     type: 'div',
     attrs: {
       class: 'priseBasket',
-      innerHTML: `#2 Device Name цена ${cartPrice}$ сумма: `,
+      innerHTML: `${numberDevice} Device Name цена ${priceDevice}$ сумма: `,
     },
     container: basket,  
   });
@@ -173,14 +155,13 @@ console.log(sumPrise + ' inside')
     type: 'div',
     attrs: {
       class: 'totalSum',
-      innerHTML: `Всего в корзине товаров на сумму ${sumPrise.toFixed(2)}$`,
+      innerHTML: `Всего в корзине товаров на сумму ${cartPrice.toFixed(2)}$`,
     },
     container: basket,
   });
 
-
-
 };
+
 const createBasketBtn = () => {
 
   const btnContainer = createElem({
@@ -233,7 +214,7 @@ const createStyle = () => {
         position: absolute;
         padding: 10px;
         right: 0;
-        top: 102px;
+        top: 80px;
         width: 300px;
         min-height: 200px;
         background: skyblue;
@@ -267,17 +248,17 @@ const createStyle = () => {
     container: document.head       
   })
 }
-// if(cartCounter > 0)
-const init = () => {
- 
 
+const init = () => {
   createBasket();
-  // createCounterBasket();
   createBasketBtn();
   createStyle();
 }
 
 init();
 
-
 btnCart.addEventListener('click', btnClickCart);
+
+
+
+
