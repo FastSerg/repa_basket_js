@@ -1,7 +1,8 @@
 temp/
 *.bat
-node_modules/
+
 # IntellijIdea files
 .idea/
 .DS_Store
 .gulpfile.js
+node_modules/
